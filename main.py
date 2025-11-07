@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 import sys
+from functions.config import system_prompt,model_name
 
 def main():
     load_dotenv()
@@ -30,8 +31,9 @@ def main():
 
 def generate_content(client, messages,has_verbose=False):
     response = client.models.generate_content(
-        model="gemini-2.0-flash-001",
+        model=model_name,
         contents=messages,
+        config=types.GenerateContentConfig(system_instruction=system_prompt),
     )
     if has_verbose:
         print("User prompt:",messages)
