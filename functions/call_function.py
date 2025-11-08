@@ -5,8 +5,8 @@ from functions.run_python_file import run_python_file
 from functions.write_file import write_file
 
 
-def call_function(function_call_part, verbose=False):
-    working_directory = "./calculator"
+def call_function(function_call_part, working_directory="./calculator", verbose=False):
+    # working_directory parameter allows flexibility
     function_name = function_call_part.name
     if verbose:
         print(f"Calling function: {function_name}({function_call_part.args})")

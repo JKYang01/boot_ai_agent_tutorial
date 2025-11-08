@@ -18,6 +18,9 @@ class Calculator:
     def evaluate(self, expression):
         if not expression or expression.isspace():
             return None
+        # Add spaces around operators
+        for op in self.operators:
+            expression = expression.replace(op, f" {op} ")
         tokens = expression.strip().split()
         return self._evaluate_infix(tokens)
 
@@ -59,3 +62,9 @@ class Calculator:
         b = values.pop()
         a = values.pop()
         values.append(self.operators[operator](a, b))
+
+if __name__ == '__main__':
+    calculator = Calculator()
+    expression = "3 + 7 * 2"
+    result = calculator.evaluate(expression)
+    print(f"{expression} = {result}")
