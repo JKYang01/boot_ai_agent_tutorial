@@ -3,7 +3,9 @@ import subprocess
 import sys
 
 
-def run_python_file(working_directory, file_path, args=[]):
+def run_python_file(working_directory, file_path, args=None):
+    if args is None:
+        args = []
     abs_file_path = os.path.abspath(os.path.join(working_directory, file_path))
     abs_working_directory = os.path.abspath(working_directory)
     if not abs_file_path.startswith(abs_working_directory):
@@ -19,17 +21,21 @@ def run_python_file(working_directory, file_path, args=[]):
     try:
         rep = subprocess.run(args=command,
                        cwd=abs_working_directory,
-                       stdout=subprocess.PIPE,
-                       stderr=subprocess.PIPE,
+                       capture_output=True,
                        timeout=30,
                        text=True)
-        if not rep.stdout or rep.stdout.strip() == "":
-            return "No output produced."
 
-        message = f'STDOUT: {rep.stdout}\n STDERR: {rep.stderr} \n '
+        # Check if there's any output at all
+        message = ""
+        if rep.stdout:
+            message+=f"STDOUT:\n{rep.stdout}\n"
+        if rep.stderr:
+            message+=f"STDERR:\n{rep.stderr}\n"
+
         if rep.returncode != 0:
-            message +=  f'Process exited with code {rep.returncode}'
-        return message
+           message+=f"Process exited with code {rep.returncode}\n"
+
+        return message if message else "No output produced"
 
     except Exception as e:
         return f"Error: executing Python file: {e}"
